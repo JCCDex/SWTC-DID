@@ -10,92 +10,226 @@ The SWTC DID Method Specification complies with the requirements of the current 
 
 ## Abstract
 
-This DID method allows any SWTC address, key pair account, or secp256k1 public key to serve as a valid identifier. Such identifiers do not require registration. If key management or additional attributes (such as "service endpoints") are needed, they are resolved via services deployed on the VDR.
+This DID method allows any SWTC address to serve as a valid identifier. Such identifiers do not require registration. If key management or additional attributes (such as "service endpoints") are needed, they are resolved via services deployed on the VDR.
 
-### Identifier Controller
+### Overview
 
-By default, each identifier is controlled by itself or its corresponding SWTC address. Each identifier can only be controlled by one SWTC address at any time. The controller can replace itself with any other SWTC address.
-
-## Target System
-
-The target system is the SWTC public blockchain network.
-
-### Advantages
-
-- Identifier creation requires no transaction fees
-- Identifier creation is private
-- Supports multi-signature (or proxy) wallets as account controllers
-- Supports secp256k1 public keys as identifiers (based on the same infrastructure)
-- Declaration data is decoupled from the underlying identifier
-- Flexible key management support
-- Supports verifiable version management
-
-## JSON-LD Context Definition
-
-Since this DID method still supports `publicKeyHex` and `publicKeyBase64` encoding for verification methods, a valid JSON-LD context must be provided for these entries.
-To enable JSON-LD processing, the DID document for `did:swtc` should use the following `@context`:
-
-```json
-"@context": [
-  "https://www.w3.org/2018/credentials/v1",
-  "https://w3id.org/security/suites/secp256k1-2019/v1"
-]
-```
-
-## DID Method Name
-
-The name string used to identify this DID method is: `swtc`
-
-DIDs using this method must begin with the prefix `did:swtc`. According to the DID specification, this string must be lowercase. The format of the DID after the prefix is described below.
-
-## Method-Specific Identifier
-
-The method-specific identifier can be a compressed hexadecimal secp256k1 public key (prefixed with `0x`), or an SWTC address on the target network.
-
-## CRUD Operation Definitions
-
-### Create (Register)
-
-To create an `swtc` DID, generate an SWTC address (i.e., a key pair). No interaction with the SWTC network is required at this stage. Registration is implicit. The private key holder is the entity identified by the DID.
-
-The default DID document for `did:swtc:<SWTC address>` on the mainnet is as follows:
+The `swtc` DID method uses IPFS as verifiable data registry for DID Documents. The DID Document format is like:
 
 ```json
 {
   "@context": [
     "https://www.w3.org/ns/did/v1",
-    "https://w3id.org/security/suites/secp256k1-2019/v1"
-  ],
-  "id": "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY",
-  "verificationMethod": [
+    "https://www.w3.org/2018/credentials/v1",
     {
-      "id": "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY#key-1",
-      "type": "EcdsaSecp256k1VerificationKey2019",
-      "controller": "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY",
-      "publicKeyHex": "0x02b9e...f4c1"
+      "version": "https://jdid.cn/did/v1"
     }
   ],
+  "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+  "created": "2025-10-28T06:50:40.208Z",
+  "updated": "2025-10-28T06:50:40.229Z",
+  "version": "1.0.0",
   "authentication": [
-    "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY#key-1"
+    "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
   ],
   "assertionMethod": [
-    "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY#key-1"
+    "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1",
+      "type": "EcdsaSecp256k1VerificationKey2019",
+      "controller": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+      "publicKeyBase58": "28PPwsFZJUscJo563Aa69SzcwPHuDf7qEacG5JSMH8D4h"
+    }
+  ],
+  "service": [
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#profile",
+      "type": "Profile",
+      "serviceEndpoint": {
+        "nickname": "Alice",
+        "preferredAvatar": "https://example.com/avatar.png"
+      }
+    },
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#ipfs-storage",
+      "type": "IpfsStorage",
+      "serviceEndpoint": {
+        "ipns": "ipns://k2k4r8ntjlp1cmgped39eq1fi4yze6fsr8og1kcmjhamgs3ubwkfldei",
+        "previousCid": ""
+      }
+    },
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#nft-golden-sands-1",
+      "standard": "jingtumNFT",
+      "tokenName": "Golden Sands",
+      "chainId": 315,
+      "tokenId": "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+      "status": "Active",
+      "credential": {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          {
+            "version": "https://jdid.cn/did/v1",
+            "chainId": "https://jdid.cn/did/v1#chainId",
+            "tokenName": "https://jdid.cn/did/v1#tokenName",
+            "tokenId": "https://jdid.cn/did/v1#tokenId",
+            "owner": "https://jdid.cn/did/v1#owner",
+            "status": "https://jdid.cn/did/v1#status"
+          }
+        ],
+        "type": [
+          "VerifiableCredential",
+          "NFTOwnership"
+        ],
+        "credentialSubject": {
+          "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+          "chainId": 315,
+          "tokenName": "Golden Sands",
+          "tokenId": "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+          "owner": "j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+          "status": "Active"
+        },
+        "issuanceDate": "2025-10-28T06:50:40.208Z",
+        "proof": {
+          "type": "EcdsaSecp256k1Signature2019",
+          "created": "2025-10-28T06:50:40Z",
+          "verificationMethod": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1",
+          "proofPurpose": "assertionMethod",
+          "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..MEQCIFRg-QrqHLWbXSOvWUN2nbUMwp00FVhmP_f3Ug5B8ZZvAiAYUNX80YlCanMaPBFO21ccM1pKFALzv7U6Z2RPpDqDWw"
+        },
+        "issuer": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h"
+      }
+    }
   ]
 }
 ```
 
+## CRUD Operation Definitions Example
+
+### Create or update
+
+upload did document to ipfs storage.
+
+```javascript
+import {
+  Secp256k1DidKeypair,
+  getKeyDoc,
+  DidService,
+  SwtcDid,
+  SwtcDidDocument,
+  SwtcDidPublish,
+  SwtcDidResolver,
+  SwtcNftVC
+} from "@jccdex/did";
+import { IpfsClient } from "@jccdex/ipfs-rpc-client";
+import { Keypairs } from "@swtc/keypairs";
+
+const client = new IpfsClient({
+  baseURL: "https://wodecards.wh.jccdex.cn:8550"
+});
+const publish = new SwtcDidPublish(client);
+
+// secp256k1 private key
+const key = "637674430F5F8736F3F86367F8393E00EF29603B6D82E62B1E4B3AC56F5A6478";
+const kp = Keypairs.deriveKeypair(key);
+// swtc address
+const address = Keypairs.deriveAddress(kp.publicKey);
+const ipns = "ipns://k2k4r8ntjlp1cmgped39eq1fi4yze6fsr8og1kcmjhamgs3ubwkfldei";
+const did = SwtcDid.fromIdentifier(address);
+const keypair = Secp256k1DidKeypair.fromPrivateKey(key);
+const id = `${did.toString()}#key-1`;
+const keyDoc = getKeyDoc(did.toString(), keypair.keypair(), "", id);
+
+// create a swtc did document
+const didDoc = new SwtcDidDocument(did.toString());
+
+// create a profile service
+const profile = DidService.generateProfile({
+  id: did.toString() + "#profile",
+  nickname: "Alice",
+  preferredAvatar: "https://example.com/avatar.png"
+});
+
+// create a ipfs storage service
+const ipfsStorage = DidService.generateIpfsStorage({
+  id: did.toString() + "#ipfs-storage",
+  ipns,
+  previousCid: ""
+});
+
+// create a swtc nft verifiable credential
+const swtcVC = new SwtcNftVC();
+swtcVC.setSubject({
+  id: did.toString(),
+  chainId: 315,
+  tokenName: "Golden Sands",
+  tokenId:
+    "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+  owner: address,
+  status: "Active"
+});
+
+// sign swtc nft vc
+await swtcVC.sign({
+  keyDoc
+});
+
+didDoc.setVersion("1.0.0")
+  .addAuthentication(id)
+  .addAssertionMethod(id)
+  .addVerificationMethod({
+    id,
+    type: keyDoc.type,
+    controller: did.toString(),
+    publicKeyBase58: keypair.base58PublicKey()
+  })
+  .addService(profile)
+  .addService(ipfsStorage)
+  .addService(
+    DidService.generateSwtcNft({
+      id: did.toString() + "#nft-golden-sands-1",
+      standard: "jingtumNFT",
+      tokenName: "Golden Sands",
+      chainId: 315,
+      tokenId:
+        "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+      status: "Active",
+      credential: swtcVC.toJSON()
+    })
+  )
+  .setUpdated();
+
+// upload did document to ipfs service.
+const res = await publish.upload(did.toString(), didDoc, key);
+console.log("Publish DID Result:", res);
+
+```
+
 ### Read (Resolve)
 
-Resolved via DID browser service.
+Resolved from ipfs storage.
 
-#### Controller Address
+```javascript
+const resolver = new SwtcDidResolver(client);
+const resolved = await resolver.resolve(did.toString());
+console.log("Resolved DID Document:", JSON.stringify(resolved, null, 2));
 
-Each identifier always has one controller address. By default, this address is the same as the identifier address, and resolution must check for signature consistency.
+```
 
-### Update
+### Verify VC
 
-Data can be updated via the VDR service.
+verify a verifiable credential
 
-### Delete (Revoke)
+```javascript
+const resolved = await resolver.resolve(did.toString());
+const swtcNftService = resolved.service.find((s) => s.credential);
 
-Data can be deleted via the VDR service.
+const vc = SwtcNftVC.fromJSON(swtcNftService.credential);
+const verifyResult = await vc.verify({
+  resolver
+});
+console.log("VC Verify Result:", JSON.stringify(verifyResult, null, 2));
+
+```

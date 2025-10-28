@@ -10,93 +10,226 @@ SWTC DID方法规范符合W3C凭证社区组当前发布的[DID规范](https://w
 
 ## 摘要
 
-该DID方法允许任何SWTC地址、密钥对账户或secp256k1公钥成为有效标识符。此类标识符无需注册。如果需要密钥管理或附加属性（如“服务端点”），则通过部署在VDR服务进行解析。
+该DID方法允许任何SWTC地址成为有效标识符。此类标识符无需注册。如果需要密钥管理或附加属性（如“服务端点”），则通过部署在VDR服务进行解析。
 
-### 标识符控制者
+### 概览
 
-默认情况下，每个标识符由其自身或其对应的SWTC地址控制。每个标识符在任意时刻只能由一个SWTC地址控制。控制者可以将自身替换为任何其他SWTC地址。
-
-## 目标系统
-
-目标系统是SWTC公链网络。
-
-### 优势
-
-- 标识符创建无需交易费用
-- 标识符创建是私密的
-- 支持多签名（或代理）钱包作为账户控制者
-- 支持secp256k1公钥作为标识符（基于同一基础设施）
-- 声明数据与底层标识符解耦
-- 灵活支持密钥管理
-- 支持可验证的版本管理
-
-## JSON-LD上下文定义
-
-由于该DID方法仍支持用于验证方法的`publicKeyHex`和`publicKeyBase64`编码，因此需要为这些条目提供有效的JSON-LD上下文。
-要启用JSON-LD处理，构建`did:swtc`的DID文档时应使用如下`@context`：
-
-```json
-"@context": [
-  "https://www.w3.org/2018/credentials/v1",
-  "https://w3id.org/security/suites/secp256k1-2019/v1"
-]
-```
-
-## DID方法名称
-
-用于标识此DID方法的名称字符串为：`swtc`
-
-使用此方法的DID必须以前缀`did:swtc`开头。根据DID规范，此字符串必须为小写。前缀后的DID格式如下所述。
-
-## 方法特定标识符
-
-方法特定标识符可以是压缩格式的十六进制secp256k1公钥（以`0x`为前缀），或目标网络上的SWTC地址。
-
-## CRUD操作定义
-
-### 创建（注册）
-
-要创建`swtc` DID，需要生成一个SWTC地址（即密钥对）。此时无需与SWTC网络交互。注册是隐式的。私钥持有者即为DID所标识的实体。
-
-主网上`did:swtc:<SWTC address>`的默认DID文档如下：
+`swtc` DID 方法使用IPFS作为DID文档的可验证数据存储。DID文档的格式示例如下：
 
 ```json
 {
   "@context": [
     "https://www.w3.org/ns/did/v1",
-    "https://w3id.org/security/suites/secp256k1-2019/v1"
-  ],
-  "id": "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY",
-  "verificationMethod": [
+    "https://www.w3.org/2018/credentials/v1",
     {
-      "id": "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY#key-1",
-      "type": "EcdsaSecp256k1VerificationKey2019",
-      "controller": "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY",
-      "publicKeyHex": "0x02b9e...f4c1"
-
+      "version": "https://jdid.cn/did/v1"
     }
   ],
+  "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+  "created": "2025-10-28T06:50:40.208Z",
+  "updated": "2025-10-28T06:50:40.229Z",
+  "version": "1.0.0",
   "authentication": [
-    "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY#key-1"
+    "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
   ],
   "assertionMethod": [
-    "did:swtc:j3AC6DTGusdwoEZGS567wa8cawQovo5QkY#key-1"
+    "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1",
+      "type": "EcdsaSecp256k1VerificationKey2019",
+      "controller": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+      "publicKeyBase58": "28PPwsFZJUscJo563Aa69SzcwPHuDf7qEacG5JSMH8D4h"
+    }
+  ],
+  "service": [
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#profile",
+      "type": "Profile",
+      "serviceEndpoint": {
+        "nickname": "Alice",
+        "preferredAvatar": "https://example.com/avatar.png"
+      }
+    },
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#ipfs-storage",
+      "type": "IpfsStorage",
+      "serviceEndpoint": {
+        "ipns": "ipns://k2k4r8ntjlp1cmgped39eq1fi4yze6fsr8og1kcmjhamgs3ubwkfldei",
+        "previousCid": ""
+      }
+    },
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#nft-golden-sands-1",
+      "standard": "jingtumNFT",
+      "tokenName": "Golden Sands",
+      "chainId": 315,
+      "tokenId": "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+      "status": "Active",
+      "credential": {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1",
+          {
+            "version": "https://jdid.cn/did/v1",
+            "chainId": "https://jdid.cn/did/v1#chainId",
+            "tokenName": "https://jdid.cn/did/v1#tokenName",
+            "tokenId": "https://jdid.cn/did/v1#tokenId",
+            "owner": "https://jdid.cn/did/v1#owner",
+            "status": "https://jdid.cn/did/v1#status"
+          }
+        ],
+        "type": [
+          "VerifiableCredential",
+          "NFTOwnership"
+        ],
+        "credentialSubject": {
+          "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+          "chainId": 315,
+          "tokenName": "Golden Sands",
+          "tokenId": "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+          "owner": "j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+          "status": "Active"
+        },
+        "issuanceDate": "2025-10-28T06:50:40.208Z",
+        "proof": {
+          "type": "EcdsaSecp256k1Signature2019",
+          "created": "2025-10-28T06:50:40Z",
+          "verificationMethod": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1",
+          "proofPurpose": "assertionMethod",
+          "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..MEQCIFRg-QrqHLWbXSOvWUN2nbUMwp00FVhmP_f3Ug5B8ZZvAiAYUNX80YlCanMaPBFO21ccM1pKFALzv7U6Z2RPpDqDWw"
+        },
+        "issuer": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h"
+      }
+    }
   ]
 }
 ```
 
-### 读取（解析）
+## CRUD操作示例
 
-通过DID浏览器服务解析。
+### 创建或更新did文档
 
-#### 控制者地址
+上传did文档到ipfs服务。
 
-每个标识符始终有一个控制者地址。默认情况下，该地址与标识符地址相同，解析必须检查签名是否一致。
+```javascript
+import {
+  Secp256k1DidKeypair,
+  getKeyDoc,
+  DidService,
+  SwtcDid,
+  SwtcDidDocument,
+  SwtcDidPublish,
+  SwtcDidResolver,
+  SwtcNftVC
+} from "@jccdex/did";
+import { IpfsClient } from "@jccdex/ipfs-rpc-client";
+import { Keypairs } from "@swtc/keypairs";
 
-### 更新
+const client = new IpfsClient({
+  baseURL: "https://wodecards.wh.jccdex.cn:8550"
+});
+const publish = new SwtcDidPublish(client);
 
-可通过VDR服务进行数据更新。
+// secp256k1 private key
+const key = "637674430F5F8736F3F86367F8393E00EF29603B6D82E62B1E4B3AC56F5A6478";
+const kp = Keypairs.deriveKeypair(key);
+// swtc address
+const address = Keypairs.deriveAddress(kp.publicKey);
+const ipns = "ipns://k2k4r8ntjlp1cmgped39eq1fi4yze6fsr8og1kcmjhamgs3ubwkfldei";
+const did = SwtcDid.fromIdentifier(address);
+const keypair = Secp256k1DidKeypair.fromPrivateKey(key);
+const id = `${did.toString()}#key-1`;
+const keyDoc = getKeyDoc(did.toString(), keypair.keypair(), "", id);
 
-### 删除（撤销）
+// create a swtc did document
+const didDoc = new SwtcDidDocument(did.toString());
 
-可通过VDR服务进行数据删除。
+// create a profile service
+const profile = DidService.generateProfile({
+  id: did.toString() + "#profile",
+  nickname: "Alice",
+  preferredAvatar: "https://example.com/avatar.png"
+});
+
+// create a ipfs storage service
+const ipfsStorage = DidService.generateIpfsStorage({
+  id: did.toString() + "#ipfs-storage",
+  ipns,
+  previousCid: ""
+});
+
+// create a swtc nft verifiable credential
+const swtcVC = new SwtcNftVC();
+swtcVC.setSubject({
+  id: did.toString(),
+  chainId: 315,
+  tokenName: "Golden Sands",
+  tokenId:
+    "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+  owner: address,
+  status: "Active"
+});
+
+// sign swtc nft vc
+await swtcVC.sign({
+  keyDoc
+});
+
+didDoc.setVersion("1.0.0")
+  .addAuthentication(id)
+  .addAssertionMethod(id)
+  .addVerificationMethod({
+    id,
+    type: keyDoc.type,
+    controller: did.toString(),
+    publicKeyBase58: keypair.base58PublicKey()
+  })
+  .addService(profile)
+  .addService(ipfsStorage)
+  .addService(
+    DidService.generateSwtcNft({
+      id: did.toString() + "#nft-golden-sands-1",
+      standard: "jingtumNFT",
+      tokenName: "Golden Sands",
+      chainId: 315,
+      tokenId:
+        "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
+      status: "Active",
+      credential: swtcVC.toJSON()
+    })
+  )
+  .setUpdated();
+
+// upload did document to ipfs service.
+const res = await publish.upload(did.toString(), didDoc, key);
+console.log("Publish DID Result:", res);
+
+```
+
+### 读取did文档
+
+从ipfs服务读取did文档。
+
+```javascript
+const resolver = new SwtcDidResolver(client);
+const resolved = await resolver.resolve(did.toString());
+console.log("Resolved DID Document:", JSON.stringify(resolved, null, 2));
+
+```
+
+### 验证VC
+
+验证可验证凭证。
+
+```javascript
+const resolved = await resolver.resolve(did.toString());
+const swtcNftService = resolved.service.find((s) => s.credential);
+
+const vc = SwtcNftVC.fromJSON(swtcNftService.credential);
+const verifyResult = await vc.verify({
+  resolver
+});
+console.log("VC Verify Result:", JSON.stringify(verifyResult, null, 2));
+
+```
