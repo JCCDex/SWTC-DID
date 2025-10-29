@@ -2,7 +2,7 @@
 
 ## 作者
 
-- [JCCDex](jccdex@jccdex.com), [JPassword](jpassdeveloper@gmail.com), [Sen Mei](jpassdeveloper@gmail.com) and [Sheng Mu](gin.musheng@gmail.com)
+- [Sheng Mu](jccdex@jccdex.com), [Sen Mei](jpassdeveloper@gmail.com)
 
 ## 前言
 
