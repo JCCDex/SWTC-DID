@@ -2,7 +2,7 @@
 
 ## Authors
 
-- [Sheng Mu](jccdex@jccdex.com), [Sen Mei](jpassdeveloper@gmail.com)
+- [Sheng Mu](mailto:jccdex@jccdex.com), [Sen Mei](mailto:jpassdeveloper@gmail.com)
 
 ## Introduction
 
