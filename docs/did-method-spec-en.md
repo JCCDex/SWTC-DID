@@ -118,7 +118,81 @@ The `swtc` DID method uses IPFS as verifiable data registry for DID Documents. T
 }
 ```
 
-## CRUD Operation Definitions Example
+## Basic operatios
+
+Any user can create an SWTC DID from a secp256k1 keypair. This process is performed offline. After the DID is created, a DID Document can be generated as needed and published to our IPFS service implementation.
+
+### Create
+
+The creation of a DID follows a few step:
+
+1. Generate a secp256k1 keypair
+2. Convert public key from keypair into an SWTC address.
+
+The swtc address is your DID.
+
+The Definition of SWTC JSON_LD Context is:
+
+```json
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://www.w3.org/2018/credentials/v1",
+    {
+      "version": "https://jdid.cn/did/v1"
+    }
+  ],
+  "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+  "authentication": [
+    "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
+  ],
+  "assertionMethod": [
+    "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
+  ],
+  "verificationMethod": [
+    {
+      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1",
+      "type": "EcdsaSecp256k1VerificationKey2019",
+      "controller": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
+      "publicKeyBase58": "28PPwsFZJUscJo563Aa69SzcwPHuDf7qEacG5JSMH8D4h"
+    }
+  ]
+}
+```
+
+### DID Registration/Anchoring
+
+DID anchoring means uploading the DID document to IPFS MFS so that the DID document stored on IPFS can be accessed via the DID.
+
+### DID Resolve
+
+DID Document resolution is achieved by querying the IPFS service with a DID. If that DID is registered, a document will be returned. Otherwise throw no link error.
+
+### DID Document Updating
+
+Just upload new DID document to IPFS MFS so that the DID document will be updated.
+
+## Key Management
+
+### Key Recovery
+
+Writing to the IPFS service requires control over the private key used to anchor the DID. **You must securely store private key, if it is lost, you will lose control of the DID.**
+
+## Privacy and Security Considerations
+
+### Key Control
+
+As mentioned in the Key Recovery section, the entity which controls the private key which anchored the DID also effectively controls the DID Document which the DID resolves to. Thus great care should be taken to ensure that the private key is kept private. Methods for ensuring key privacy are outside the scope of this document.
+
+### DID Document Public Profile
+
+The DID Document anchored with the registry contract can contain any content, though it is recommended that it conforms to the [W3C DID Document Specificaiton](https://w3c.github.io/did/). As registered DIDs can be resolved by anyone, care should be taken to only update the registry to resolve to DID Documents which DO NOT expose any sensitive personal information, or information which you may not wish to be public.
+
+### Sensitive Personal Information
+
+Keep personally-identifiable information (PII) off-ledger. We consider that personal information is mostly sensitive content and DID documents may be parsed by others. Therefore, care should be taken to ensure that the DID document does not contain any sensitive personal information. Personal information in the real world is not recommended for inclusion in the document. So others cannot contact someone in the real world by parsing this personal DID document.
+
+## Code Examples
 
 ### Create or update
 
