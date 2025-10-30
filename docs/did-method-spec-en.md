@@ -14,9 +14,9 @@ This DID method allows any SWTC address to serve as a valid identifier. Such ide
 
 ## Method Specific Identifier
 
-The DID method is `swtc` and a DID that uses this method MUST begin with the following prefix `did:swtc`.
+The DID method is `swtc` and a DID that uses this method must begin with `did:swtc`.
 
-The identity identifier is base58 encoded string that is permanent, unique, and deterministically calculated from the `secp256k1` public key via [deriveAddress](http://github.com/swtcca/swtclib/blob/master/packages/keypairs/tssrc/keypairs.ts#L401) API.
+The identity identifier is base58 encoded `swtc` chain address that is permanent and unique. The [deriveAddress](http://github.com/swtcca/swtclib/blob/master/packages/keypairs/tssrc/keypairs.ts#L401) function can convert any `secp256k1` public key into an SWTC address.
 
 A valid `swtc` DID:
 
