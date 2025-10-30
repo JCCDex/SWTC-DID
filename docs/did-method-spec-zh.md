@@ -8,13 +8,34 @@
 
 SWTC DID方法规范符合W3C凭证社区组当前发布的[DID规范](https://www.w3.org/TR/did-1.1/#abstract)的要求。
 
-## 摘要
+该DID方法允许任何SWTC地址成为有效标识符。此类标识符无需注册。如果需要密钥管理或附加属性（如"服务端点"），则通过部署在VDR服务进行解析。
 
-该DID方法允许任何SWTC地址成为有效标识符。此类标识符无需注册。如果需要密钥管理或附加属性（如“服务端点”），则通过部署在VDR服务进行解析。
+## 方法特定标识符
 
-### 概览
+该 DID 方法为 `swtc`，使用此方法的 DID 必须以 `did:swtc` 开头。
 
-`swtc` DID 方法使用IPFS作为DID文档的可验证数据存储。DID文档的格式示例如下：
+身份标识符是经 base58 编码的 `swtc` 链地址，该地址是永久且唯一的。[deriveAddress](http://github.com/swtcca/swtclib/blob/master/packages/keypairs/tssrc/keypairs.ts#L401) 函数可以将任何 `secp256k1` 公钥转换为 SWTC 地址。
+
+一个有效的 `swtc` DID：
+
+```text
+did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h
+```
+
+## 基本操作
+
+任何用户都可以从 secp256k1 密钥对创建一个 SWTC DID。该过程可离线完成。创建 DID 后，可按需生成 DID 文档，并将其发布到我们实现的 IPFS 服务。
+
+### 创建
+
+创建 DID 的步骤如下：
+
+1. 生成一个 secp256k1 密钥对
+2. 将密钥对中的公钥转换为 SWTC 地址。
+
+该 SWTC 地址即为你的 DID。
+
+SWTC JSON-LD 上下文定义如下：
 
 ```json
 {
@@ -26,9 +47,6 @@ SWTC DID方法规范符合W3C凭证社区组当前发布的[DID规范](https://w
     }
   ],
   "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
-  "created": "2025-10-28T06:50:40.208Z",
-  "updated": "2025-10-28T06:50:40.229Z",
-  "version": "1.0.0",
   "authentication": [
     "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1"
   ],
@@ -42,71 +60,43 @@ SWTC DID方法规范符合W3C凭证社区组当前发布的[DID规范](https://w
       "controller": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
       "publicKeyBase58": "28PPwsFZJUscJo563Aa69SzcwPHuDf7qEacG5JSMH8D4h"
     }
-  ],
-  "service": [
-    {
-      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#profile",
-      "type": "Profile",
-      "serviceEndpoint": {
-        "nickname": "Alice",
-        "preferredAvatar": "https://example.com/avatar.png"
-      }
-    },
-    {
-      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#ipfs-storage",
-      "type": "IpfsStorage",
-      "serviceEndpoint": {
-        "ipns": "ipns://k2k4r8ntjlp1cmgped39eq1fi4yze6fsr8og1kcmjhamgs3ubwkfldei",
-        "previousCid": ""
-      }
-    },
-    {
-      "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#nft-golden-sands-1",
-      "standard": "jingtumNFT",
-      "tokenName": "Golden Sands",
-      "chainId": 315,
-      "tokenId": "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
-      "status": "Active",
-      "credential": {
-        "@context": [
-          "https://www.w3.org/2018/credentials/v1",
-          {
-            "version": "https://jdid.cn/did/v1",
-            "chainId": "https://jdid.cn/did/v1#chainId",
-            "tokenName": "https://jdid.cn/did/v1#tokenName",
-            "tokenId": "https://jdid.cn/did/v1#tokenId",
-            "owner": "https://jdid.cn/did/v1#owner",
-            "status": "https://jdid.cn/did/v1#status"
-          }
-        ],
-        "type": [
-          "VerifiableCredential",
-          "NFTOwnership"
-        ],
-        "credentialSubject": {
-          "id": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
-          "chainId": 315,
-          "tokenName": "Golden Sands",
-          "tokenId": "64656E2053616E647320E98791E6B29900000000000000000000000000000066",
-          "owner": "j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h",
-          "status": "Active"
-        },
-        "issuanceDate": "2025-10-28T06:50:40.208Z",
-        "proof": {
-          "type": "EcdsaSecp256k1Signature2019",
-          "created": "2025-10-28T06:50:40Z",
-          "verificationMethod": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h#key-1",
-          "proofPurpose": "assertionMethod",
-          "jws": "eyJhbGciOiJFUzI1NksiLCJiNjQiOmZhbHNlLCJjcml0IjpbImI2NCJdfQ..MEQCIFRg-QrqHLWbXSOvWUN2nbUMwp00FVhmP_f3Ug5B8ZZvAiAYUNX80YlCanMaPBFO21ccM1pKFALzv7U6Z2RPpDqDWw"
-        },
-        "issuer": "did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h"
-      }
-    }
   ]
 }
 ```
 
-## CRUD操作示例
+### DID 注册/锚定
+
+DID 锚定是指将 DID 文档上传到 IPFS MFS，使得存储在 IPFS 上的 DID 文档可以通过该 DID 进行访问。
+
+### DID 解析
+
+DID 文档的解析是通过向 IPFS 服务以 DID 作为查询进行检索来实现的。如果该 DID 已注册，则会返回一个文档；否则抛出"无链接（no link）"错误。
+
+### DID 文档更新
+
+只需将新的 DID 文档上传到 IPFS MFS，DID 文档即可被更新。
+
+## 密钥管理
+
+### 密钥恢复
+
+向 IPFS 服务写入（上传）需要对用于锚定 DID 的私钥拥有控制权。**你必须妥善保存私钥；如果私钥丢失，你将失去对该 DID 的控制权。**
+
+## 隐私与安全注意事项
+
+### 密钥控制
+
+如"密钥恢复"部分所述，控制用于锚定 DID 的私钥的实体，也就实际控制了该 DID 所解析到的 DID 文档。因此应非常谨慎地确保私钥保密。保证密钥隐私的方法超出本文件范围。
+
+### DID 文档公开资料
+
+通过注册合约锚定的 DID 文档可以包含任意内容，但建议其遵循 [W3C DID 文档规范](https://w3c.github.io/did/)。由于已注册的 DID 可以被任何人解析，因此在更新注册项以指向某个 DID 文档时，应注意不要在文档中暴露任何敏感的个人信息或你不希望公开的信息。
+
+### 敏感个人信息
+
+请将可识别个人身份的信息（PII）保存在链外。我们认为个人信息通常属于敏感内容，且 DID 文档可能会被他人解析。因此应避免在 DID 文档中包含敏感个人信息。现实世界中的个人信息不建议包含在文档中，以避免他人通过解析该个人 DID 文档联系到现实中的某人。
+
+## 代码示例
 
 ### 创建或更新did文档
 
