@@ -12,6 +12,18 @@ The SWTC DID Method Specification complies with the requirements of the current 
 
 This DID method allows any SWTC address to serve as a valid identifier. Such identifiers do not require registration. If key management or additional attributes (such as "service endpoints") are needed, they are resolved via services deployed on the VDR.
 
+## Method Specific Identifier
+
+The DID method is `swtc` and a DID that uses this method MUST begin with the following prefix `did:swtc`.
+
+The identity identifier is base58 encoded string that is permanent, unique, and deterministically calculated from the `secp256k1` public key via [deriveAddress](http://github.com/swtcca/swtclib/blob/master/packages/keypairs/tssrc/keypairs.ts#L401) API.
+
+A valid `swtc` DID:
+
+```text
+did:swtc:j35Zw6UFMpxiNv5j4JyEnzJ6e18C1eex5h
+```
+
 ### Overview
 
 The `swtc` DID method uses IPFS as verifiable data registry for DID Documents. The DID Document format is like:
