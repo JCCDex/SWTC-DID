@@ -76,6 +76,10 @@ DID Document resolution is achieved by querying the IPFS service with a DID. If 
 
 Just upload new DID document to IPFS MFS so that the DID document will be updated.
 
+### DID Document Deleting
+
+The `DELETE` method is not currently supported. You can achieve deletion by writing empty data (i.e., overwriting the item with an empty payload).
+
 ## Key Management
 
 ### Key Recovery
